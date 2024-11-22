@@ -1,6 +1,7 @@
 import { createListenerMiddleware, TypedStartListening } from '@reduxjs/toolkit'
 import { AppDispatch, RootState } from '@/store/store';
 import { backgroundListener } from '@/store/background/background.listener';
+import { uiListener } from './ui/ui.listener';
 
 const listenerMiddleware = createListenerMiddleware();
 
@@ -9,7 +10,8 @@ export const startAppListening =
   listenerMiddleware.startListening as TypedStartListening<RootState, AppDispatch>;
 
 const listeners = [
-    backgroundListener
+    backgroundListener,
+    uiListener
 ];
 
 export function initAppListeners() {

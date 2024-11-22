@@ -16,6 +16,8 @@ export const backgroundListener = [
         actionCreator: getBackgrounds,
         effect: async (_: any, listenerApi: any) => {
             try {
+                if (listenerApi.getState().backgrounds.backgrounds.length > 0) return;
+                
                 const backgrounds = await listBackgrounds({
                     baseURL: API_URL
                 });
@@ -34,7 +36,7 @@ export const backgroundListener = [
                     baseURL: API_URL,
                     body: action.payload.body
                 });
-                
+
                 if (background.error) {
                     listenerApi.dispatch(createBackgroundFailure(background.error));
                     return;

@@ -1,12 +1,14 @@
-import { configureStore, createListenerMiddleware } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit'
 import { initAppListeners } from '@/store/listener';
-import { reducer as backgroundsReducer } from './background/background.reducer';
+import { reducer as backgroundsReducer } from '@/store/background/background.reducer';
+import { reducer as uiReducer } from '@/store/ui/ui.reducer';
 
 const listenerMiddleware = initAppListeners();
 
 export const store = configureStore({
   reducer: {
     backgrounds: backgroundsReducer,
+    ui: uiReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().prepend(listenerMiddleware.middleware), 

@@ -4,13 +4,15 @@ import { createReducer, PayloadAction } from "@reduxjs/toolkit";
 import { createBackgroundItem, createBackgroundSuccess, getBackgrounds, getBackgroundsFailure, getBackgroundsSuccess } from "./background.actions";
 
 export interface BackgroundState {
-    backgrounds: Partial<Background>[];
+    backgrounds: Background[];
+    by_id: Record<string, Background>;
     loading: boolean;
     error: ListBackgroundsError | null;
 }
 
 export const defaultState: BackgroundState = {
     backgrounds: [],
+    by_id: {},
     loading: false,
     error: null
 };
@@ -21,6 +23,10 @@ export const reducer = createReducer(defaultState, (builder) => {
     })
     .addCase(getBackgroundsSuccess, (state: BackgroundState, action: PayloadAction<ListBackgroundsResponse>) => {
         state.backgrounds = action.payload;
+        state.by_id = action.payload.reduce((acc, background) => {
+            acc[background.id] = background;
+            return acc;
+        }, {} as Record<string, Background>);
         state.loading = false;
     })
     .addCase(getBackgroundsFailure, (state: BackgroundState, action: PayloadAction<ListBackgroundsError>) => {
@@ -32,6 +38,7 @@ export const reducer = createReducer(defaultState, (builder) => {
     })
     .addCase(createBackgroundSuccess, (state: BackgroundState, action: PayloadAction<CreateBackgroundResponse>) => {
         state.backgrounds.splice(0, 0, action.payload);
+        state.by_id[action.payload.id] = action.payload;
         state.loading = false;
     });
 });

@@ -1,28 +1,53 @@
-import {useParams} from "react-router-dom";
-import {Background} from "../../services/api-client";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { NotFound } from "../NotFound/NotFound";
+import { BreadcrumbCurrentLink, BreadcrumbRoot, BreadcrumbLink, Heading, Stack } from "@chakra-ui/react";
+import { BackgroundImage, DetailsWrapper, Avatar } from "./Background.styled";
 
-export function BackgroundDetails() {
-    const {id} = useParams()
+export interface BackgroundDetailsProps {
+    id?: string;
+}
 
-    const models = JSON.parse(sessionStorage.getItem("backgrounds")!) as Background[]
-    const background = models.find(m => m.id === id) as Background
+export const BackgroundDetails:React.FC<BackgroundDetailsProps> = ({ id }) => {
+    if (!id) id = useParams().id;
+    if (!id) return <NotFound />;
+    const location = useLocation();
+    const isExternalView = (location.pathname === `/backgrounds/${id}`);
 
+    const background = useSelector((state: RootState) => state.backgrounds.by_id[id]);
+
+    if (!background) return <NotFound />;
 
     return (
-        <div style={{
-            flex: 1, justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch',
-            gap: 12, flexDirection: 'column'
-        }}>
-            <h1>{background.name}</h1>
-            <img style={{width: 400, height: 600}} src={background.avatar}/>
-            <div style={{gap: 12, display: 'flex'}}>
-                <img style={{width: 200, height: 300}} src={background.preview_images[0]}/>
-                <img style={{width: 200, height: 300}} src={background.preview_images[1]}/>
-                <img style={{width: 200, height: 300}} src={background.preview_images[2]}/>
-            </div>
+        <DetailsWrapper>
+            <Heading size="2xl">
+                {background.name}
+            </Heading>
+            
+            {getBreadcrumbs()}
 
-            <h2>Info</h2>
+            <Avatar src={background.avatar} fit={'contain'} />
+            <Stack direction="column">
+                <BackgroundImage boxSize="300px" src={background.preview_images[0]} alt={'Loading...'} />
+                <BackgroundImage boxSize="300px" src={background.preview_images[1]} alt={'Loading...'} />
+                <BackgroundImage boxSize="300px" src={background.preview_images[2]} alt={'Loading...'} />
+            </Stack>
+
+            <Heading size="md">Info</Heading>
             <h3>{background.category}</h3>
-        </div>
+        </DetailsWrapper>
     );
+
+    function getBreadcrumbs() {
+        if (!isExternalView) return <Link to={`/backgrounds/${id}`}>Open in a window</Link>;
+
+        return (
+            <BreadcrumbRoot size="sm">
+                <BreadcrumbLink href="/">Home</BreadcrumbLink> /&nbsp;
+                <BreadcrumbLink href="/backgrounds">Backgrounds</BreadcrumbLink> /&nbsp;
+                <BreadcrumbCurrentLink>{background.name}</BreadcrumbCurrentLink>
+            </BreadcrumbRoot>
+        )
+    }
 }

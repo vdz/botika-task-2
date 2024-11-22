@@ -3,9 +3,12 @@ import { NewWrapper } from "./Background.styled.tsx";
 import { BreadcrumbCurrentLink, BreadcrumbLink, BreadcrumbRoot, Button, Field, Fieldset, Heading, Input } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { createBackgroundItem } from "@/store/background/background.actions.ts";
+import { Link, useLocation } from "react-router-dom";
 
 export function CreateBackground() {
     const dispatch = useDispatch();
+    const location = useLocation();
+    const isExternalView = (location.pathname === "/backgrounds/create");
     
     const [avatar, setAvatar] = useState<File>();
     const [preview1, setPreview1] = useState<File>();
@@ -21,11 +24,7 @@ export function CreateBackground() {
                 Create Background
             </Heading>
 
-            <BreadcrumbRoot size="sm">
-                <BreadcrumbLink href="/">Home</BreadcrumbLink> /&nbsp;
-                <BreadcrumbLink href="/backgrounds">Backgrounds</BreadcrumbLink> /&nbsp;
-                <BreadcrumbCurrentLink>Create New</BreadcrumbCurrentLink>
-            </BreadcrumbRoot>
+            {getBreadcrumbs()}
 
             <Field.Root>
                 <Field.Label htmlFor='name'>Name</Field.Label>
@@ -95,5 +94,17 @@ export function CreateBackground() {
                 category: category!
             }
         }));
+    }
+
+    function getBreadcrumbs() {
+        if (!isExternalView) return <Link to="/backgrounds/create">Open in a window</Link>;
+
+        return (
+            <BreadcrumbRoot size="sm">
+                <BreadcrumbLink href="/">Home</BreadcrumbLink> /&nbsp;
+                <BreadcrumbLink href="/backgrounds">Backgrounds</BreadcrumbLink> /&nbsp;
+                <BreadcrumbCurrentLink>Create New</BreadcrumbCurrentLink>
+            </BreadcrumbRoot>
+        )
     }
 }

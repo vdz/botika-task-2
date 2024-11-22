@@ -13,27 +13,28 @@ import { NotFound } from "@/components/NotFound/NotFound";
 import { CreateBackground } from "@/components/Background/CreateBackground";
 import { CreatePose } from "@/components/Pose/CreatePose";
 import { Home } from "./components/Home/Home";
-
+import { Error } from "./components/Error/Error";
 
 export const routes = [
     {
         path: "/",
-        Component: Home
+        element: <Home />,
+        errorElement: <Error />
     },
     {
         path: "/models",
         children:[
             {
                 path:"",
-                Component: ModelList
+                element: <ModelList />
             },
             {
                 path:"create",
-                Component: CreateModel
+                element: <CreateModel />
             },
             {
                 path:":id",
-                Component: ModelDetails
+                element: <ModelDetails />
             }
         ]
     },
@@ -42,51 +43,54 @@ export const routes = [
         children:[
             {
                 path:"",
-                Component: BackgroundList
+                element: <BackgroundList />
             },
             {
                 path:"create",
-                Component: CreateBackground
+                element: <CreateBackground />
             },
             {
                 path:":id",
-                Component: BackgroundDetails
+                element: <BackgroundDetails />
             }
-        ]
+        ],
+        errorElement: <Error />
     },
     {
         path: "/poses",
         children:[
             {
                 path:"",
-                Component: PoseList
+                element: <PoseList />
             },
             {
                 path:"create",
-                Component: CreatePose
+                element: <CreatePose />
             },
             {
                 path:":id",
-                Component: PoseDetails
+                element: <PoseDetails />
             }
-        ]
+        ],
+        errorElement: <Error />
     },
     {
         path: "/products",
         children:[
             {
                 path:"",
-                Component: ProductList
+                element: <ProductList />
             },
             {
                 path:"create",
-                Component: CreateProduct
+                element: <CreateProduct />
             },
             {
                 path:":id",
-                Component: ProductDetails
+                element: <ProductDetails />
             }
-        ]
+        ],
+        errorElement: <Error />
     },
     {
         path: "*",
